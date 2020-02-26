@@ -1,63 +1,76 @@
-import React, { Component } from "react";
-import axios from "../../axios";
-import Post from "../../components/Post/Post";
-import FullPost from "../../components/FullPost/FullPost";
-import NewPost from "../../components/NewPost/NewPost";
+import React, { Component, Suspense } from "react";
+import Posts from "./Posts/Posts";
+import { Route, NavLink, Switch, Redirect } from "react-router-dom";
 import "./Blog.css";
+//import NewPost from "../Blog/NewPost/NewPost";
+// using React suspense for lazy loading const LazyPosts = React.lazy(() => import("../Blog/NewPost/NewPost"));
+import asyncComponent from "../../hoc/AsyncComponent";
+//import FullPost from "../Blog/FullPost/FullPost";
+
+//lazy loading using normal
+const asyncPost = asyncComponent(() => {
+  return import("../Blog/NewPost/NewPost");
+});
 
 class Blog extends Component {
   state = {
-    posts: [],
-    selectedPost: null,
-    error: false
+    auth: true
   };
-  componentDidMount() {
-    axios
-      .get("/posts")
-      .then(resposne => {
-        const posts = resposne.data.slice(0, 4);
-        const updatePost = posts.map(post => {
-          return {
-            ...post,
-            author: "Max"
-          };
-        });
-
-        this.setState({ posts: updatePost });
-      })
-      .catch(err => {
-        this.setState({ error: true });
-      });
-  }
-  selectedClickeHandler = id => {
-    this.setState({ selectedPost: id });
-  };
-
   render() {
-    let postsData = (
-      <p style={{ textAlign: "centre" }}>Something went Error </p>
-    );
-    if (!this.state.error) {
-      postsData = this.state.posts.map(res => {
-        return (
-          <Post
-            key={res.id}
-            title={res.title}
-            Author={res.author}
-            clickHandler={() => this.selectedClickeHandler(res.id)}
-          />
-        );
-      });
-    }
     return (
-      <div>
-        <section className="Posts">{postsData}</section>
-        <section>
+      <div className="Blog">
+        <nav>
+          <ul>
+            <li>
+              <NavLink
+                to="/posts"
+                activeClassName="my-active"
+                activeStyle={{
+                  color: "#fa923f",
+                  textDecoration: "underline"
+                }}
+              >
+                Posts
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to={{
+                  pathname: "/new-posts",
+                  search: "?quick-search=true"
+                  //hash: "#submit"
+                }}
+              >
+                Post
+              </NavLink>
+            </li>
+          </ul>
+        </nav>
+        <Switch>
+          <Route path="/posts" component={Posts} />.
+          {/* lazy loading using normal */}
+          {this.state.auth ? (
+            <Route path="/new-posts" component={asyncPost} />
+          ) : null}
+          {/*  using React suspense for lazy loading {this.state.auth ? (
+            <Route
+              path="/new-posts"
+              render={() => {
+                <Suspense fallback={<div>Loading...</div>}>
+                  <LazyPosts />
+                </Suspense>;
+              }}
+            />
+          ) : null} */}
+          <Redirect from="/" to="/posts" />
+        </Switch>
+        {/* <Posts />  switch is used for switching the components based on route*/}
+        {/* <section>
           <FullPost id={this.state.selectedPost} />
         </section>
         <section>
           <NewPost />
-        </section>
+        </section> */}
       </div>
     );
   }
