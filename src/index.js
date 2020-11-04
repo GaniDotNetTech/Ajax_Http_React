@@ -7,21 +7,21 @@ import registerServiceWorker from "./registerServiceWorker";
 
 axios.defaults.baseURL = "https://jsonplaceholder.typicode.com";
 axios.interceptors.request.use(
-  request => {
+  (request) => {
     console.log(request);
     return request;
   },
-  error => {
+  (error) => {
     console.log(error);
     return Promise.reject(error);
   }
 );
 axios.interceptors.response.use(
-  response => {
+  (response) => {
     console.log(response);
     return response;
   },
-  error => {
+  (error) => {
     console.log(error);
     return Promise.reject(error);
   }
