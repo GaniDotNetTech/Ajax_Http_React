@@ -1,4 +1,4 @@
-const intialState = { counter: 0, results: [] };
+const intialState = { counter: 0 };
 const reducer = (state = intialState, action) => {
   switch (action.type) {
     case "Increment":
@@ -20,19 +20,6 @@ const reducer = (state = intialState, action) => {
       return {
         ...state,
         counter: state.counter - action.val
-      };
-    case "StoredResult":
-      return {
-        ...state,
-        results: state.results.concat({ id: new Date(), val: state.counter })
-      };
-    case "DeleteStoredResult":
-      const deletedResultArray = state.results.filter(
-        (res) => res.id !== action.deletedResult
-      );
-      return {
-        ...state,
-        results: deletedResultArray
       };
   }
 
