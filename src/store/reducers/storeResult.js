@@ -1,6 +1,11 @@
 const intialState = { results: [] };
-const reducer = (state = intialState, action) => {
+const storeReducer = (state = intialState, action) => {
   switch (action.type) {
+    case "StoredResult":
+      return {
+        ...state,
+        results: state.results.concat({ id: new Date(), val: action.result })
+      };
     case "DeleteStoredResult":
       const deletedResultArray = state.results.filter(
         (res) => res.id !== action.deletedResult
@@ -14,4 +19,4 @@ const reducer = (state = intialState, action) => {
   return state;
 };
 
-export default reducer;
+export default storeReducer;
