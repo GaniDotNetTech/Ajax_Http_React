@@ -1,14 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 //import axios from "axios";
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import "./index.css";
 import App from "./App";
-import reducer from "./store/reducer";
+import counterReducer from "./store/reducers/counters";
+import resultReducer from "./store/reducers/storeResult";
 //import registerServiceWorker from "./registerServiceWorker";
-
-const store = createStore(reducer);
+const rootReducer = combineReducers({
+  ctr: counterReducer,
+  res: resultReducer
+});
+const store = createStore(rootReducer);
 // axios.defaults.baseURL = "https://jsonplaceholder.typicode.com";
 // axios.interceptors.request.use(
 //   (request) => {
